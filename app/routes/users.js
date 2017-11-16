@@ -1,11 +1,12 @@
 const express = require('express');
 const MUser = require('../models/users');
+const { validate } = require('../../lib').sessions.auth;
 
 const router = express.Router();
 
 router.route('/')
 
-  .get((req, res, next) => {
+  .get(validate, (req, res, next) => {
     MUser.find({}, (err, rslt) => {
       const users = rslt;
       if (err) {
@@ -15,7 +16,7 @@ router.route('/')
     });
   })
 
-  .post((req, res, next) => {
+  .post(validate, (req, res, next) => {
     const user = new MUser(); // create a new instance of the user model
     user.full_name = req.body.full_name; // set the users name (comes from the request)
     user.email = req.body.email; // set the users name (comes from the request)
@@ -30,7 +31,7 @@ router.route('/')
   });
 
 // MIDDLEWARE Check User ID
-router.use('/:userId', (req, res, next) => {
+router.use('/:userId', validate, (req, res, next) => {
   MUser.findById(req.params.userId, (err, row) => {
     if (err || !row) {
       const error = err || {};
@@ -47,12 +48,12 @@ router.use('/:userId', (req, res, next) => {
 
 router.route('/:userId')
 
-  .get((req, res) => {
+  .get(validate, (req, res) => {
     const { user } = req;
     res.json(user);
   })
 
-  .put((req, res, next) => {
+  .put(validate, (req, res, next) => {
     const { user } = req;
 
     user.full_name = req.body.full_name; // set the users name (comes from the request)
@@ -67,7 +68,7 @@ router.route('/:userId')
     });
   })
 
-  .delete((req, res, next) => {
+  .delete(validate, (req, res, next) => {
     // use our user model to find the user we want
     MUser.remove({ _id: req.params.userId }, (err) => {
       if (err) {

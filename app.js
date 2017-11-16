@@ -64,9 +64,11 @@ router.use((req, res, next) => {
 
 const index = require('./app/routes/index');
 const users = require('./app/routes/users');
+const jwt = require('./app/routes/jwt');
 
 router.use('/', index);
 router.use('/users', users);
+router.use('/jwt', jwt);
 
 // catch 404 and forward to error handler
 router.use((req, res, next) => {
@@ -86,8 +88,9 @@ router.use((err, req, res, next) => {
   res.json({
     error: true,
     alerts: {
-      code: err.status || 500,
+      code: err.status || err.resCode || 500,
       message: err.message || 'Internal Server Error',
+      name: err.name || 'Internal Server',
     },
     errors: err.errors,
     data: null,

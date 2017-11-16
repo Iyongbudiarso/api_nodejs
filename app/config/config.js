@@ -8,4 +8,13 @@ config.powered_by = 'maxsolution.net';
 
 config.dbdriver = 'mongodb'; // mongodb, mysql
 
+// bcrypt
+config.salt_work_factor = 10;
+
+// use jwt config
+config.secret_key = 'ilovethey';
+config.jwt_sign_options = { noTimestamp: true };
+config.jwt_verify_options = { ignoreExpiration: true };
+config.jwt_expire_token = 1440; // in minutes
+
 module.exports = config;

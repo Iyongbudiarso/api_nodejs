@@ -3,10 +3,11 @@
 const mongoose = require('mongoose');
 mongoose.Promise = require('bluebird');
 const bcrypt = require('bcrypt');
+const config = require('../../app/config/config');
 
 const { Schema } = mongoose;
 
-const SALT_WORK_FACTOR = 10;
+const SALT_WORK_FACTOR = config.salt_work_factor;
 // MAX_LOGIN_ATTEMPTS = 5,
 // LOCK_TIME = 2 * 60 * 60 * 1000; // 2hours
 
@@ -14,7 +15,7 @@ const UsersSchema = new Schema({
   full_name: { type: String, required: true },
 
   email: { type: String, required: true },
-  password: { type: String },
+  password: { type: String, select: false }, // https://stackoverflow.com/a/12096922/1811296
 
   loginAttempts: { type: Number, required: true, default: 0 },
   lockUntil: { type: Number },
@@ -23,6 +24,8 @@ const UsersSchema = new Schema({
   created_at: { type: Date, default: Date.now },
   updated_at: { type: Date },
   role: { type: Array, default: ['user'] },
+}, {
+  strict: false,
 });
 
 UsersSchema.pre('save', function (next) {

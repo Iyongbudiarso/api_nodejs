@@ -65,10 +65,12 @@ router.use((req, res, next) => {
 const index = require('./app/routes/index');
 const users = require('./app/routes/users');
 const jwt = require('./app/routes/jwt');
+const fileUpload = require('./app/routes/file-upload');
 
 router.use('/', index);
 router.use('/users', users);
 router.use('/jwt', jwt);
+router.use('/upload', fileUpload);
 
 // catch 404 and forward to error handler
 router.use((req, res, next) => {
